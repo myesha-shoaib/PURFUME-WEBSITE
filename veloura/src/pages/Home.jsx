@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Perfume3D from "../components/Perfume3D";
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
+import products from "../data/Products";
 
 const heroSlides = [
   {

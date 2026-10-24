@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, ShoppingBag, Star } from "lucide-react";
-import products from "../data/products";
+import products from "../data/Products";
 import { useStore } from "../context/StoreContext";
 
 export default function ProductDetails() {
