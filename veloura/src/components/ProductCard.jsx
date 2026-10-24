@@ -1,25 +1,66 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 
-export default function ProductCard({ product }) {
+const fallbackTones = [
+  ["#5b1d31", "#b44d63", "#d8b879"],
+  ["#7b3045", "#d88991", "#ead7bd"],
+  ["#8b5128", "#d49a50", "#f0d394"],
+  ["#3d3434", "#8b7470", "#d7bf8e"],
+  ["#6a3826", "#b97845", "#e0bd7f"],
+  ["#5d5362", "#a58eaa", "#ddc4a0"]
+];
+
+export default function ProductCard({ product, priority = false }) {
   const { addToCart, wishlist, toggleWishlist } = useStore();
+  const [imageReady, setImageReady] = useState(false);
 
   const isFavorite = wishlist.some(
     (item) => item.id === product.id
   );
+  const [bodyColor, glowColor, capColor] =
+    fallbackTones[(product.id - 1) % fallbackTones.length];
+
+  const fallbackStyle = {
+    "--fallback-body": bodyColor,
+    "--fallback-glow": glowColor,
+    "--fallback-cap": capColor
+  };
 
   return (
-    <article className="product-card">
-      <div className="product-image-wrap">
+    <article className="product-card" style={fallbackStyle}>
+      <div className={`product-image-wrap ${imageReady ? "image-ready" : ""}`}>
         <Link to={`/product/${product.id}`}>
+          <div className="product-image-fallback" aria-hidden="true">
+            <span className="fallback-aura" />
+            <span className="fallback-bottle">
+              <span className="fallback-cap" />
+              <span className="fallback-label">
+                <small>VELOURA</small>
+                <strong>{product.name}</strong>
+                <i>EAU DE PARFUM</i>
+              </span>
+              <span className="fallback-shine" />
+            </span>
+          </div>
+
           <img
             src={product.image}
             alt={product.name}
             className="product-image"
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            onLoad={() => setImageReady(true)}
+            onError={(event) => {
+              setImageReady(false);
+              event.currentTarget.style.display = "none";
+            }}
           />
         </Link>
+
+        {product.badge && (
+          <span className="product-badge">{product.badge}</span>
+        )}
 
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}

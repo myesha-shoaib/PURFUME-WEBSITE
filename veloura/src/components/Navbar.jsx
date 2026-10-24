@@ -17,7 +17,9 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <Link to="/" className="brand" onClick={closeMenu}>
-        VEL<span>OURA</span>
+        <span className="brand-wordmark">
+          VEL<span>OURA</span>
+        </span>
         <small>EAU DE PARFUM</small>
       </Link>
 

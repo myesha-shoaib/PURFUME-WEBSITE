@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
 return ( <footer className="footer"> <div className="footer-main"> <div className="footer-brand"> <Link to="/" className="brand">
-VEL<span>OURA</span> <small>EAU DE PARFUM</small> </Link>
+<span className="brand-wordmark">VEL<span>OURA</span></span> <small>EAU DE PARFUM</small> </Link>
 
       <p>Fragrance is personal. Make yours unforgettable.</p>
     </div>

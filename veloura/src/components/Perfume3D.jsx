@@ -1,31 +1,59 @@
 import { Canvas } from "@react-three/fiber";
-import { Float, ContactShadows, Environment } from "@react-three/drei";
+import {
+  ContactShadows,
+  Environment,
+  Float,
+  PresentationControls,
+  RoundedBox,
+  Sparkles
+} from "@react-three/drei";
 
-function Bottle() {
+const bottleTones = {
+  wine: {
+    body: "#5d1c31",
+    glass: "#a44a5d",
+    label: "#f0dfc0",
+    light: "#8f3455"
+  },
+  amber: {
+    body: "#8c4d24",
+    glass: "#d58a48",
+    label: "#f4e2bc",
+    light: "#bd7535"
+  },
+  rose: {
+    body: "#7f3347",
+    glass: "#d88991",
+    label: "#f7e5d8",
+    light: "#bd596e"
+  }
+};
+
+function Bottle({ tone }) {
+  const colors = bottleTones[tone] || bottleTones.wine;
+
   return (
-    <Float
-      speed={1.5}
-      rotationIntensity={0.18}
-      floatIntensity={0.5}
-    >
-      <group rotation={[0.04, -0.2, 0]}>
-        {/* Perfume bottle body */}
-        <mesh position={[0, -0.15, 0]}>
-          <boxGeometry args={[1.65, 2.15, 0.7]} />
+    <Float speed={1.4} rotationIntensity={0.16} floatIntensity={0.42}>
+      <group rotation={[0.04, -0.22, 0]}>
+        <RoundedBox
+          args={[1.72, 2.25, 0.78]}
+          radius={0.16}
+          smoothness={6}
+          position={[0, -0.16, 0]}
+        >
           <meshPhysicalMaterial
-            color="#651b32"
-            roughness={0.16}
-            metalness={0.35}
+            color={colors.body}
+            roughness={0.14}
+            metalness={0.28}
             clearcoat={1}
-            clearcoatRoughness={0.08}
+            clearcoatRoughness={0.06}
           />
-        </mesh>
+        </RoundedBox>
 
-        {/* Glass front highlight */}
-        <mesh position={[0, -0.15, 0.355]}>
-          <boxGeometry args={[1.42, 1.92, 0.025]} />
+        <mesh position={[0, -0.15, 0.405]}>
+          <planeGeometry args={[1.47, 1.98]} />
           <meshPhysicalMaterial
-            color="#a44a5d"
+            color={colors.glass}
             roughness={0.12}
             metalness={0.18}
             transparent
@@ -34,9 +62,26 @@ function Bottle() {
           />
         </mesh>
 
-        {/* Gold neck */}
+        <mesh position={[0, -0.15, 0.42]}>
+          <planeGeometry args={[1.28, 0.74]} />
+          <meshPhysicalMaterial
+            color={colors.label}
+            roughness={0.48}
+            metalness={0.05}
+          />
+        </mesh>
+
+        <mesh position={[0, 0.38, 0.44]}>
+          <boxGeometry args={[0.84, 0.025, 0.012]} />
+          <meshStandardMaterial
+            color="#a2743d"
+            metalness={0.78}
+            roughness={0.26}
+          />
+        </mesh>
+
         <mesh position={[0, 1.05, 0]}>
-          <cylinderGeometry args={[0.25, 0.25, 0.22, 32]} />
+          <cylinderGeometry args={[0.26, 0.26, 0.2, 32]} />
           <meshStandardMaterial
             color="#d6b77b"
             metalness={0.9}
@@ -44,9 +89,8 @@ function Bottle() {
           />
         </mesh>
 
-        {/* Gold cap */}
         <mesh position={[0, 1.42, 0]}>
-          <cylinderGeometry args={[0.34, 0.34, 0.56, 32]} />
+          <cylinderGeometry args={[0.35, 0.35, 0.58, 32]} />
           <meshStandardMaterial
             color="#d6b77b"
             metalness={0.9}
@@ -54,12 +98,12 @@ function Bottle() {
           />
         </mesh>
 
-        {/* Label */}
-        <mesh position={[0, -0.2, 0.38]}>
-          <planeGeometry args={[1.15, 0.65]} />
+        <mesh position={[0, 1.42, 0.04]}>
+          <cylinderGeometry args={[0.355, 0.355, 0.09, 32]} />
           <meshStandardMaterial
-            color="#f0dfc0"
-            roughness={0.65}
+            color="#f1d9a6"
+            metalness={0.82}
+            roughness={0.2}
           />
         </mesh>
       </group>
@@ -67,7 +111,7 @@ function Bottle() {
   );
 }
 
-export default function Perfume3D() {
+export default function Perfume3D({ tone = "wine" }) {
   return (
     <div className="perfume-canvas">
       <Canvas
@@ -75,20 +119,40 @@ export default function Perfume3D() {
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
       >
-        <ambientLight intensity={1.1} />
+        <ambientLight intensity={1.3} />
 
-        <directionalLight
-          position={[4, 5, 5]}
-          intensity={2.5}
-        />
+        <directionalLight position={[4, 5, 5]} intensity={2.8} />
 
         <pointLight
           position={[-3, 1, 2]}
           color="#d6b77b"
-          intensity={35}
+          intensity={28}
         />
 
-        <Bottle />
+        <pointLight
+          position={[3, -1, 2]}
+          color={(bottleTones[tone] || bottleTones.wine).light}
+          intensity={14}
+        />
+
+        <PresentationControls
+          global
+          snap
+          polar={[-0.18, 0.18]}
+          azimuth={[-0.38, 0.38]}
+          config={{ mass: 1.4, tension: 180 }}
+          speed={1.2}
+        >
+          <Bottle tone={tone} />
+        </PresentationControls>
+
+        <Sparkles
+          count={22}
+          scale={[3.8, 3.8, 2.5]}
+          size={2.4}
+          speed={0.25}
+          color="#e7c98e"
+        />
 
         <ContactShadows
           position={[0, -1.8, 0]}
